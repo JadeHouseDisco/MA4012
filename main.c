@@ -57,7 +57,6 @@ void releaseBall() {
 void moveForward(int speed) {
 	motor[leftMotor] = -speed - 5;
 	motor[rightMotor] = speed;
-	clearTimer(T3);
     clearTimer(T4);
 }
 
@@ -65,14 +64,12 @@ void moveBackward(int speed) {
 	motor[leftMotor] = speed + 5;
 	motor[rightMotor] = -speed;
 	clearTimer(T2);
-    clearTimer(T3);
 }
 
 void rotateAntiClockwise(int speed) {
 	motor[leftMotor] = speed;
 	motor[rightMotor] = speed;
 	clearTimer(T2);
-	clearTimer(T3);
     clearTimer(T4);
 }
 
@@ -87,7 +84,6 @@ void stopMovement() {
 	motor[leftMotor] = 0;
 	motor[rightMotor] = 0;
 	clearTimer(T2);
-	clearTimer(T3);
     clearTimer(T4);
 }
 
@@ -130,19 +126,10 @@ void reorient(int speed) {
 		}
 
 	}
-	clearTimer(T3);
 }
 
 task main() {
 	while (true) {
-		frontDistance = SensorValue(frontDistanceSensor);
-		backDistance = SensorValue(backDistanceSensor);
-		enemyDistance = SensorValue(enemyDistanceSensor);
-		angledDistance = SensorValue(angledDistanceSensor);
-		backLeft = SensorValue(backLeftSensor);
-		frontRight = SensorValue(frontRightSensor);
-		frontLeft = SensorValue(frontLeftSensor);
-		backRight = SensorValue(backRightSensor);
 
 		if (freshRun == 1) {
 			clearTimer(T1);
@@ -169,9 +156,17 @@ task main() {
 				}
 			}
 			clearTimer(T2); // for infinite wall pushing
-      clearTimer(T3); // for the infinite searching
-      clearTimer(T4); // for the infininte returningmode
+      		clearTimer(T4); // for the infininte returningmode
 		}
+
+		frontDistance = SensorValue(frontDistanceSensor);
+		backDistance = SensorValue(backDistanceSensor);
+		enemyDistance = SensorValue(enemyDistanceSensor);
+		angledDistance = SensorValue(angledDistanceSensor);
+		backLeft = SensorValue(backLeftSensor);
+		frontRight = SensorValue(frontRightSensor);
+		frontLeft = SensorValue(frontLeftSensor);
+		backRight = SensorValue(backRightSensor);
 
 		//Convert analog value to distance(m)
 		if (frontDistance > 200) {
@@ -210,11 +205,11 @@ task main() {
 		}
 		else if (backLeft == 0 || backRight == 0) {
 			if (time1[T4] > 5000) {
-      	moveForward(60);
-      	wait1Msec(500);
-      	reorient(45);
-      	clearTimer(T1);
-				while (time1[T1] < 1500) {
+				moveForward(60);
+				wait1Msec(500);
+				reorient(45);
+				clearTimer(T1);
+				while (time1[T1] < 2500) {
 					backLeft = SensorValue(backLeftSensor);
 					frontRight = SensorValue(frontRightSensor);
 					frontLeft = SensorValue(frontLeftSensor);
@@ -230,8 +225,8 @@ task main() {
 					}
 				}
 				reorient(45);
-				moveBackward(60);
-      }
+				clearTimer(T4);
+      		}
 			else if (pickUp == 0) {
 				wait1Msec(300);
 				backLeftBumper = SensorValue(backLeftBumperSensor);
@@ -248,18 +243,18 @@ task main() {
 				}
 				else {
 					moveForward(60);
-					wait1Msec(500);
+					wait1Msec(800);
 					reorient(45);
 				}
 			}
 			else {
 				moveForward(60);
 				wait1Msec(500);
-				reorient(45);
 			}
 		}
 		else if (pickUp == 0 && returnMode == false) {
 			moveBackward(60);
+			returnMode == true;
 		}
 		else if (pickUp == 1) {
 			if (frontDistance < distanceThresh && enemyDistance >= 55.0) {
@@ -325,48 +320,40 @@ task main() {
 			else {
 				pickUp = SensorValue[pickUpSensor];
 				rotateClockwise(40);
-                if (time1[T3] > 5000 ) {
-                    moveBackward(60);
-                    wait1Msec(500);
-                    reorient(45);
-                    rotateClockwise(40);
-                }
 			}
 		}
+
 		else {
-		writeDebugStreamLine("Value of pickUp : %d", SensorValue(pickUpSensor));
-        writeDebugStreamLine("pickUp == 0, and returning right now");
-        if (time1[T4] > 5000) {
-        	moveForward(60);
-        	wait1Msec(500);
-        	reorient(45);
-        	clearTimer(T1);
-					while (time1[T1] < 1500) {
-						backLeft = SensorValue(backLeftSensor);
-						frontRight = SensorValue(frontRightSensor);
-						frontLeft = SensorValue(frontLeftSensor);
-						backRight = SensorValue(backRightSensor);
-						pickUp = SensorValue[pickUpSensor];
-						if (frontLeft == 0 || frontRight == 0) {
-							moveBackward(60);
-							wait1Msec(500);
-							reorient(45);
-						}
-						else {
-							moveForward(60);
-						}
+			writeDebugStreamLine("Value of pickUp : %d", SensorValue(pickUpSensor));
+			writeDebugStreamLine("pickUp == 0, and returning right now");
+			if (time1[T4] > 5000) {
+				moveForward(60);
+				wait1Msec(500);
+				reorient(45);
+				clearTimer(T4);
+				while (time1[T4] < 1500) {
+					backLeft = SensorValue(backLeftSensor);
+					frontRight = SensorValue(frontRightSensor);
+					frontLeft = SensorValue(frontLeftSensor);
+					backRight = SensorValue(backRightSensor);
+					pickUp = SensorValue[pickUpSensor];
+					if (frontLeft == 0 || frontRight == 0) {
+						moveBackward(60);
+						wait1Msec(500);
+						reorient(45);
 					}
-					reorient(45);
-					moveBackward(60);
-        }
-        else {
-            moveBackward(60);
-
-        }
-	}
-
-
-	writeDebugStreamLine("non of the block is activated now");
+					else {
+						moveForward(60);
+					}
+				}
+				reorient(45);
+				moveBackward(60);
+				clearTimer(T4);
+			}
+			else {
+				moveBackward(60);
+			}
+		}
     clearDebugStream();
 	}
 }
