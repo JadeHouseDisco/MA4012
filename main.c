@@ -156,6 +156,7 @@ task main() {
 				}
 			}
 			clearTimer(T2); // for infinite wall pushing
+			clearTimer(T3);
       		clearTimer(T4); // for the infininte returningmode
 		}
 
@@ -292,7 +293,7 @@ task main() {
 								wait1Msec(500);
 								reorient(45);
 								clearTimer(T2);
-								while (time1[T2] < 3000) {
+								while (time1[T2] < 2500) {
 									backLeft = SensorValue(backLeftSensor);
 									frontRight = SensorValue(frontRightSensor);
 									frontLeft = SensorValue(frontLeftSensor);
@@ -324,14 +325,12 @@ task main() {
 		}
 
 		else {
-			writeDebugStreamLine("Value of pickUp : %d", SensorValue(pickUpSensor));
-			writeDebugStreamLine("pickUp == 0, and returning right now");
 			if (time1[T4] > 5000) {
 				moveForward(60);
 				wait1Msec(500);
 				reorient(45);
 				clearTimer(T4);
-				while (time1[T4] < 1500) {
+				while (time1[T4] < 2500) {
 					backLeft = SensorValue(backLeftSensor);
 					frontRight = SensorValue(frontRightSensor);
 					frontLeft = SensorValue(frontLeftSensor);
