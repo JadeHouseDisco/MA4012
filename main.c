@@ -39,6 +39,7 @@ int backLeftBumper;
 int backRightBumper;
 bool returnMode = false;
 double distanceThresh;
+int repositionCount = 1;
 
 void releaseBall() {
 	motor[leftMotor] = 0;
@@ -200,7 +201,54 @@ task main() {
 			distanceThresh == 65.0;
 		}
 
-		if (frontLeft == 0 || frontRight == 0) {
+		if (time1[T3] > 20000) {
+			reorient(45);
+			if (repositionCount % 2 == 1) {
+				moveBackward(60);
+				clearTimer(T3);
+				while (time1[T3] < 1000) {
+					backLeft = SensorValue(backLeftSensor);
+					backRight = SensorValue(backRightSensor);
+					pickUp = SensorValue[pickUpSensor];
+					if (backLeft == 0 || backRight == 0) {
+						moveforward(60);
+						wait1Msec(500);
+						reorient(45);
+					}
+					else if (pickUp == 0) {
+						returnMode = true;
+						break;
+					}
+					else {
+						moveBackward(60);
+					}
+				}
+				clearTimer(T3);
+			}
+			else {
+				moveForward(60);
+				clearTimer(T3);
+				while (time1[T3] < 1000) {
+					frontRight = SensorValue(frontRightSensor);
+					frontLeft = SensorValue(frontLeftSensor);
+					pickUp = SensorValue[pickUpSensor];
+					if (frontLeft == 0 || frontRight == 0) {
+						moveBackward(60);
+						wait1Msec(500);
+						reorient(45);
+					}
+					else if (pickUp == 0) {
+						returnMode = true;
+						break;
+					}
+					else {
+						moveForward(60);
+					}
+				}
+				clearTimer(T3);
+			}
+		}
+		else if (frontLeft == 0 || frontRight == 0) {
 			moveBackward(60);
 			wait1Msec(500);
 		}
@@ -237,6 +285,7 @@ task main() {
 					freshRun = 1;
 					ramp = 1;
 					returnMode = false;
+					clearTimer(T3);
                     clearTimer(T4);
 				}
 				else if ((backLeftBumper == 0) || (backRightBumper == 0)) {
@@ -256,6 +305,7 @@ task main() {
 		else if (pickUp == 0 && returnMode == false) {
 			moveBackward(60);
 			returnMode == true;
+			clearTimer(T3);
 		}
 		else if (pickUp == 1) {
 			if (frontDistance < distanceThresh && enemyDistance >= 55.0) {
@@ -272,6 +322,7 @@ task main() {
 								reorient(45);
 								moveBackward(60);
 								returnMode = true;
+								clearTimer(T3);
                                 clearTimer(T4);
 								break;
 							}
@@ -325,6 +376,7 @@ task main() {
 		}
 
 		else {
+			clearTimer(T3);
 			if (time1[T4] > 5000) {
 				moveForward(60);
 				wait1Msec(500);
