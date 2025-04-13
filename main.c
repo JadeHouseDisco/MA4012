@@ -38,6 +38,7 @@ int freshRun = 1;
 int backLeftBumper;
 int backRightBumper;
 bool returnMode = false;
+double distanceThresh;
 
 void releaseBall() {
 	motor[leftMotor] = 0;
@@ -195,6 +196,14 @@ task main() {
 			enemyDistance = 100.0;
 		}
 
+		north = SensorValue(northSensor);
+		if (north == 0) {
+			distanceThresh == 35.0;
+		}
+		else {
+			distanceThresh == 65.0;
+		}
+
 		if (frontLeft == 0 || frontRight == 0) {
 			moveBackward(60);
 			wait1Msec(500);
@@ -253,7 +262,7 @@ task main() {
 			moveBackward(60);
 		}
 		else if (pickUp == 1) {
-			if (frontDistance < 65.0 && enemyDistance >= 55.0) {
+			if (frontDistance < distanceThresh && enemyDistance >= 55.0) {
 				if (angledDistance < 35.0) {
 					rotateAntiClockwise(40);
 					wait1Msec(100);
