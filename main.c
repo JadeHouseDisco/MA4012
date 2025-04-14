@@ -57,13 +57,13 @@ void releaseBall() {
 }
 
 void moveForward(int speed) {
-	motor[leftMotor] = -speed - 7;
+	motor[leftMotor] = -speed - 10;
 	motor[rightMotor] = speed;
     clearTimer(T4);
 }
 
 void moveBackward(int speed) {
-	motor[leftMotor] = speed + 7;
+	motor[leftMotor] = speed + 10;
 	motor[rightMotor] = -speed;
 	clearTimer(T2);
 }
@@ -326,9 +326,6 @@ task main() {
 							pickUp = SensorValue[pickUpSensor];
 							if (pickUp == 0) {
 								reorient(45);
-								stopMovement();
-								wait1Msec(2000);
-								writeDebugStreamLine("as;lkdjfl;kasjdf;lkjasl;kdfjl;kasjlfkjsalkdfjl;askfj");
 								moveBackward(60);
 								returnMode = true;
 								clearTimer(T3);
@@ -377,6 +374,7 @@ task main() {
 				}
 				else {
 					moveForward(60);
+					wait1Msec(100);
 				}
 			}
 			else {
