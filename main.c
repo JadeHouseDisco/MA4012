@@ -38,8 +38,9 @@ int freshRun = 1;
 int backLeftBumper;
 int backRightBumper;
 bool returnMode = false;
-double distanceThresh;
+float distanceThresh;
 int repositionCount = 1;
+bool atLeft = true;
 
 void releaseBall() {
 	motor[leftMotor] = 0;
@@ -195,10 +196,10 @@ task main() {
 
 		north = SensorValue(northSensor);
 		if (north == 0) {
-			distanceThresh == 35.0;
+			distanceThresh = 35.0;
 		}
 		else {
-			distanceThresh == 65.0;
+			distanceThresh = 65.0;
 		}
 
 		if (time1[T3] > 20000) {
@@ -211,7 +212,7 @@ task main() {
 					backRight = SensorValue(backRightSensor);
 					pickUp = SensorValue[pickUpSensor];
 					if (backLeft == 0 || backRight == 0) {
-						moveforward(60);
+						moveForward(60);
 						wait1Msec(500);
 						reorient(45);
 					}
@@ -258,7 +259,7 @@ task main() {
 				wait1Msec(500);
 				reorient(45);
 				clearTimer(T1);
-				while (time1[T1] < 2500) {
+				while (time1[T1] < 1500) {
 					backLeft = SensorValue(backLeftSensor);
 					frontRight = SensorValue(frontRightSensor);
 					frontLeft = SensorValue(frontLeftSensor);
@@ -274,6 +275,8 @@ task main() {
 					}
 				}
 				reorient(45);
+				moveBackward(60);
+				clearTimer(T3);
 				clearTimer(T4);
       		}
 			else if (pickUp == 0) {
@@ -304,7 +307,7 @@ task main() {
 		}
 		else if (pickUp == 0 && returnMode == false) {
 			moveBackward(60);
-			returnMode == true;
+			returnMode = true;
 			clearTimer(T3);
 		}
 		else if (pickUp == 1) {
@@ -360,6 +363,7 @@ task main() {
 									pickUp = SensorValue[pickUpSensor];
 								}
 								clearTimer(T2);
+								clearTimer(T3);
 								break;
 							}
 						}
@@ -371,7 +375,12 @@ task main() {
 			}
 			else {
 				pickUp = SensorValue[pickUpSensor];
-				rotateClockwise(40);
+				if (atLeft) {
+					rotateClockwise(40);
+				}
+				else {
+					rotateAntiClockwise(40);
+				}
 			}
 		}
 
@@ -382,7 +391,7 @@ task main() {
 				wait1Msec(500);
 				reorient(45);
 				clearTimer(T4);
-				while (time1[T4] < 2500) {
+				while (time1[T4] < 1500) {
 					backLeft = SensorValue(backLeftSensor);
 					frontRight = SensorValue(frontRightSensor);
 					frontLeft = SensorValue(frontLeftSensor);
@@ -399,6 +408,7 @@ task main() {
 				}
 				reorient(45);
 				moveBackward(60);
+				clearTimer(T3);
 				clearTimer(T4);
 			}
 			else {
