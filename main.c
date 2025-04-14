@@ -95,22 +95,22 @@ void reorient(int speed) {
 	west = SensorValue(westSensor);
 	south = SensorValue(southSensor);
 	if (((north == 1) && (east == 1)  && (south == 0) && (west == 1))
-		|| ((north == 1) && (east == 0)  && (south == 0) && (west == 1))) {
+		|| ((north == 1) && (east == 0)  && (south == 0) && (west == 1))
+		|| ((north == 1) && (east == 0)  && (south == 1) && (west == 1))
+		|| ((north == 0) && (east == 0)  && (south == 1) && (west == 1))) {
 		while (true) {
 			north = SensorValue(northSensor);
 			east = SensorValue(eastSensor);
 			west = SensorValue(westSensor);
 			south = SensorValue(southSensor);
-			if ((north == 1) && (east == 1)  && (south == 0) && (west == 1)) {
-			rotateClockwise(speed);
-			wait1Msec(1);
-			moveBackward(60);
+			if ((north == 1) && (east == 1)  && (south == 0) && (west == 0)) {
 				break;
 			}
 			else {
 				rotateClockwise(speed);
 			}
 		}
+		moveBackward(60);
 	}
 	else {
 		while (true) {
@@ -119,14 +119,13 @@ void reorient(int speed) {
 			west = SensorValue(westSensor);
 			south = SensorValue(southSensor);
 			if ((north == 1) && (east == 1)  && (south == 0) && (west == 1)) {
-				moveBackward(60);
 				break;
 			}
 			else {
 				rotateAntiClockwise(speed);
 			}
 		}
-
+		moveBackward(60);
 	}
 }
 
@@ -326,7 +325,7 @@ task main() {
 								moveBackward(60);
 								returnMode = true;
 								clearTimer(T3);
-                                clearTimer(T4);
+                clearTimer(T4);
 								break;
 							}
 							else if (SensorValue[rampSensor] == 1) {
