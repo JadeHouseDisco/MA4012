@@ -57,13 +57,13 @@ void releaseBall() {
 }
 
 void moveForward(int speed) {
-	motor[leftMotor] = -speed - 5;
+	motor[leftMotor] = -speed - 7;
 	motor[rightMotor] = speed;
     clearTimer(T4);
 }
 
 void moveBackward(int speed) {
-	motor[leftMotor] = speed + 5;
+	motor[leftMotor] = speed + 7;
 	motor[rightMotor] = -speed;
 	clearTimer(T2);
 }
@@ -150,6 +150,7 @@ task main() {
 				}
 				else if (pickUp == 0) {
 					returnMode = true;
+					reorient(45);
 					break;
 				}
 				else {
@@ -157,8 +158,8 @@ task main() {
 				}
 			}
 			clearTimer(T2); // for infinite wall pushing
-			clearTimer(T3);
-      		clearTimer(T4); // for the infininte returningmode
+			clearTimer(T3); // for infinite searching
+      clearTimer(T4); // for the infininte returningmode
 		}
 
 		frontDistance = SensorValue(frontDistanceSensor);
@@ -171,7 +172,7 @@ task main() {
 		backRight = SensorValue(backRightSensor);
 
 		//Convert analog value to distance(m)
-		if (frontDistance > 200) {
+		if (frontDistance > 0) {
 			frontDistance = 1 / ((frontDistance + 149.1) / 24339);
 		}
 		else {
@@ -179,7 +180,7 @@ task main() {
 		}
 
 		//Convert analog value to distance(m)
-		if (angledDistance > 200) {
+		if (angledDistance > 0) {
 			angledDistance = 1 / ((angledDistance + 149.1) / 24339);
 		}
 		else {
@@ -198,7 +199,7 @@ task main() {
 			distanceThresh = 35.0;
 		}
 		else {
-			distanceThresh = 65.0;
+			distanceThresh = 70.0;
 		}
 
 		if (time1[T3] > 20000) {
@@ -216,7 +217,8 @@ task main() {
 						reorient(45);
 					}
 					else if (pickUp == 0) {
-						returnMode = true;
+					reorient(45);
+					returnMode = true;
 						break;
 					}
 					else {
@@ -238,7 +240,8 @@ task main() {
 						reorient(45);
 					}
 					else if (pickUp == 0) {
-						returnMode = true;
+					reorient(45);
+					returnMode = true;
 						break;
 					}
 					else {
@@ -329,7 +332,7 @@ task main() {
 								break;
 							}
 							else if (SensorValue[rampSensor] == 1) {
-								wait1Msec(300);
+								wait1Msec(400);
 								motor[rollerMotor] = -127;
 							}
 						}
@@ -382,7 +385,6 @@ task main() {
 				}
 			}
 		}
-
 		else {
 			clearTimer(T3);
 			if (time1[T4] > 5000) {
@@ -414,6 +416,9 @@ task main() {
 				moveBackward(60);
 			}
 		}
-    clearDebugStream();
+
+		writeDebugStreamLine("frontDistance : %d", frontDistance);
+		writeDebugStreamLine("angledDistance: %d", angledDistance);
+		clearDebugStream();
 	}
 }
