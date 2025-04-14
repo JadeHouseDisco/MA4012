@@ -199,7 +199,7 @@ task main() {
 			distanceThresh = 35.0;
 		}
 		else {
-			distanceThresh = 70.0;
+			distanceThresh = 60.0;
 		}
 
 		if (time1[T3] > 20000) {
@@ -308,6 +308,7 @@ task main() {
 			}
 		}
 		else if (pickUp == 0 && returnMode == false) {
+			reorient(45);
 			moveBackward(60);
 			returnMode = true;
 			clearTimer(T3);
@@ -325,6 +326,9 @@ task main() {
 							pickUp = SensorValue[pickUpSensor];
 							if (pickUp == 0) {
 								reorient(45);
+								stopMovement();
+								wait1Msec(2000);
+								writeDebugStreamLine("as;lkdjfl;kasjdf;lkjasl;kdfjl;kasjlfkjsalkdfjl;askfj");
 								moveBackward(60);
 								returnMode = true;
 								clearTimer(T3);
